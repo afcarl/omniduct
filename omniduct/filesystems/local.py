@@ -94,6 +94,21 @@ class LocalFsClient(FileSystemClient):
                 raise
 
     # File opening
+    def _file_read_(self, path, size=-1, offset=0, binary=False):
+        with open(path, 'r' + 'b' if binary else '') as f:
+            body = f.read()
+        if offset > 0:
+            body = body[offset:]
+        if size >= 0:
+            body = body[:size]
+        return body
 
-    def _open(self, path, mode):
-        return open(path, mode=mode)
+    def _file_append_(self, path, s, binary):
+        with open(path, 'a' + 'b' if binary else '') as f:
+            f.write(s)
+        return True
+
+    def _file_write_(self, path, s, binary):
+        with open(path, 'w' + 'b' if binary else '') as f:
+            f.write(s)
+        return True
